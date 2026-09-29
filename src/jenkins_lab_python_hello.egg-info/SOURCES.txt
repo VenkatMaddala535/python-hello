@@ -1,0 +1,16 @@
+README.md
+pyproject.toml
+src/hello_web/__init__.py
+src/hello_web/__main__.py
+src/hello_web/app.py
+src/hello_web/greeting.py
+src/hello_web/public/app.js
+src/hello_web/public/index.html
+src/hello_web/public/style.css
+src/jenkins_lab_python_hello.egg-info/PKG-INFO
+src/jenkins_lab_python_hello.egg-info/SOURCES.txt
+src/jenkins_lab_python_hello.egg-info/dependency_links.txt
+src/jenkins_lab_python_hello.egg-info/entry_points.txt
+src/jenkins_lab_python_hello.egg-info/requires.txt
+src/jenkins_lab_python_hello.egg-info/top_level.txt
+tests/test_app.py

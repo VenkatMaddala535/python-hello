@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="A small Python website for learning Jenkins continuous integration.">
+  <title>Hello from Python · Jenkins Lab</title>
+  <link rel="stylesheet" href="/style.css">
+  <script src="/app.js" defer></script>
+</head>
+<body>
+  <header>
+    <div class="brand"><span class="logo" aria-hidden="true">&gt;_</span> Jenkins Lab</div>
+    <span class="label">Project 03 / 03 · CI basics</span>
+  </header>
+  <main>
+    <p class="eyebrow">Small app. Real practice.</p>
+    <h1>Hello from Python.</h1>
+    <p class="intro">Your first build starts here. A tiny website to practice testing, packaging, and continuous integration with Jenkins.</p>
+    <div class="workspace">
+      <section class="card" aria-labelledby="try-title">
+        <h2 id="try-title">Make it say hello</h2>
+        <p class="help">Enter your name and send a request to this app.</p>
+        <form id="greeting-form">
+          <label for="name">Your name</label>
+          <div class="field">
+            <input id="name" name="name" placeholder="e.g. Balaji" maxlength="80" autocomplete="given-name">
+            <button type="submit">Say hello <span aria-hidden="true">↗</span></button>
+          </div>
+        </form>
+        <div class="result">
+          <small>Response</small>
+          <output id="greeting" for="name" aria-live="polite">Hello, World!</output>
+        </div>
+        <div class="status" id="status" role="status"><span class="dot" aria-hidden="true"></span><span>Checking app health…</span></div>
+        <noscript><p class="help">Enable JavaScript to use the greeting form.</p></noscript>
+      </section>
+      <aside class="card" aria-labelledby="project-title">
+        <span class="stack-tag">Python / hello-world</span>
+        <h2 id="project-title">Meet your project</h2>
+        <p class="help">One app. One Jenkinsfile. One build to understand.</p>
+        <dl>
+          <div><dt>Runtime</dt><dd>Python 3.11+</dd></div>
+          <div><dt>Build tool</dt><dd>pip + build</dd></div>
+          <div><dt>Build output</dt><dd>Wheel + source archive</dd></div>
+          <div><dt>Default port</dt><dd>5000</dd></div>
+        </dl>
+      </aside>
+    </div>
+    <section class="flow" aria-label="Learning pipeline">
+      <p>Your CI learning path</p>
+      <div class="steps"><span>01 · Checkout</span><span class="arrow" aria-hidden="true">→</span><span>02 · Test</span><span class="arrow" aria-hidden="true">→</span><span>03 · Build</span><span class="arrow" aria-hidden="true">→</span><span>04 · Save artifact</span></div>
+    </section>
+  </main>
+  <footer><span>Next lessons: SonarQube checks + JFrog artifact storage.</span><a href="/health">View health endpoint ↗</a></footer>
+</body>
+</html>

@@ -1,0 +1,45 @@
+# Python Hello
+
+A Python 3.11+ website using Flask, pytest, and standard Python packaging.
+
+Run these commands **inside `python-hello/`**:
+
+```bash
+python3.11 -m venv .venv
+.venv/bin/python -m pip install -r requirements-dev.txt
+.venv/bin/python -m pytest
+.venv/bin/python -m build
+.venv/bin/python -m hello_web
+```
+
+Open http://localhost:5000. Stop with **Ctrl+C**.
+
+| Task | Command / output |
+| --- | --- |
+| Run website | `.venv/bin/python -m hello_web` |
+| Test + coverage | `.venv/bin/python -m pytest` |
+| Build packages | `.venv/bin/python -m build` |
+| Greeting | `/api/greet?name=Balaji` → `Hello, Balaji!` |
+| Health | `/health` → `{"status":"ok","stack":"python"}` |
+| Wheel | `dist/jenkins_lab_python_hello-1.0.0-py3-none-any.whl` |
+| Source package | `dist/jenkins_lab_python_hello-1.0.0.tar.gz` |
+| Test reports | `reports/junit.xml` |
+| Coverage | `coverage.xml` and the test console |
+
+Use another port: `PORT=5001 .venv/bin/python -m hello_web`.
+
+If Python 3.11+ is named `python3` on your machine, use that for the first command. All following commands explicitly use the virtual environment; no activation is required. Match the executable in the Jenkinsfile to your agent later.
+
+The wheel contains the Python code and website assets. To try it in a **separate** virtual environment:
+
+```bash
+python3.11 -m venv /tmp/hello-wheel-demo
+/tmp/hello-wheel-demo/bin/python -m pip install dist/jenkins_lab_python_hello-1.0.0-py3-none-any.whl
+/tmp/hello-wheel-demo/bin/jenkins-hello-python
+```
+
+The Jenkinsfile installs dependencies, runs pytest, creates wheel/source packages, and saves them. Flask's built-in server is used for this local learning app.
+
+For a Docker build agent, select **`python-hello/Jenkinsfile.docker`** as the Jenkins Script Path. It uses `python:3.11-bookworm` on a node labeled `docker`. See the [Docker agent runbook](../runbooks/05-docker-agents.md).
+
+[Local runbook](../runbooks/01-local-projects.md) · [Jenkins runbook](../runbooks/02-jenkins-ci.md) · [Optional integrations](../runbooks/03-sonarqube-jfrog.md)

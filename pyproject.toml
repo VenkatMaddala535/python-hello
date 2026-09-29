@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools==80.9.0", "wheel==0.45.1"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "jenkins-lab-python-hello"
+dynamic = ["version"]
+description = "A tiny Flask website for learning CI pipelines."
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = ["Flask==3.1.3"]
+
+[project.scripts]
+jenkins-hello-python = "hello_web.__main__:main"
+
+[tool.setuptools.dynamic]
+version = {attr = "hello_web.__version__"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+hello_web = ["public/*.html", "public/*.css", "public/*.js"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "--junitxml=reports/junit.xml --cov=hello_web --cov-branch --cov-report=term-missing --cov-report=xml:coverage.xml"
+
+[tool.coverage.run]
+relative_files = true
+source = ["src/hello_web"]
+omit = ["*/__main__.py"]
