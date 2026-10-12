@@ -1,58 +1,34 @@
 
 pipeline {
-    agent {
-        label 'pipeline-linux-agent'
-    }
+    agent { label 'pipeline-linux-agent' }
 
     stages {
-
-
-       stage('Debug workspace') {
+        stage('Install dependencies') {
             steps {
                 sh '''
-                    echo "Current workspace:"
-                    pwd
-                    echo "Workspace contents:"
-                    ls -la
-                    echo "Nested project contents:"
-                    ls -la python-hello || true
+                    python3.11 -m venv .venv
+                    .venv/bin/python -m pip install -r requirements-dev.txt
                 '''
             }
         }
 
-        stage('Install dependencies') {
-            steps {
-                dir('python-hello') {
-                    sh '''
-                        python3.11 -m venv .venv
-                        .venv/bin/python -m pip install -r requirements-dev.txt
-                    '''
-                }
-            }
-        }
-
-
         stage('Test') {
             steps {
-                dir('python-hello') {
-                    sh '.venv/bin/python -m pytest'
-                }
+                sh '.venv/bin/python -m pytest'
             }
             post {
                 always {
-                    junit 'python-hello/reports/junit.xml'
+                    junit 'reports/junit.xml'
                 }
             }
         }
 
         stage('SonarQube Analysis') {
             steps {
-                dir('python-hello') {
-                    withSonarQubeEnv('SonarQube') {
-                        script {
-                            def scannerHome = tool 'SonarScanner'
-                            sh "${scannerHome}/bin/sonar-scanner"
-                        }
+                withSonarQubeEnv('SonarQube') {
+                    script {
+                        def scannerHome = tool 'SonarScanner'
+                        sh "${scannerHome}/bin/sonar-scanner"
                     }
                 }
             }
@@ -60,13 +36,12 @@ pipeline {
 
         stage('Build and save artifact') {
             steps {
-                dir('python-hello') {
-                    sh 'rm -rf dist && .venv/bin/python -m build'
-                    archiveArtifacts artifacts: 'python-hello/dist/*',
-                                     fingerprint: true
-                }
+                sh '''
+                    rm -rf dist
+                    .venv/bin/python -m build
+                '''
+                archiveArtifacts artifacts: 'dist/*', fingerprint: true
             }
         }
     }
 }
-
