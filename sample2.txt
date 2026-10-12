@@ -1,0 +1,71 @@
+pipeline {
+    agent {
+        node {
+            label 'maven-agent'
+        }
+    }
+
+    stages {
+
+        stage('Check project') {
+            steps {
+                dir('/dd/ayon/git/jenkins/python-hello') {
+                    sh '''
+                        echo "Current directory:"
+                        pwd
+
+                        echo "Project files:"
+                        ls -la
+                    '''
+                }
+            }
+        }
+
+        stage('Install dependencies') {
+            steps {
+                dir('/dd/ayon/git/jenkins/python-hello') {
+                    sh '''
+                        python3.11 -m venv .venv
+                        .venv/bin/python -m pip install --upgrade pip
+                        .venv/bin/python -m pip install -r requirements-dev.txt
+                    '''
+                }
+            }
+        }
+
+        stage('Test') {
+            steps {
+                dir('/dd/ayon/git/jenkins/python-hello') {
+                    sh '''
+                        mkdir -p reports
+                        .venv/bin/python -m pytest --junitxml=reports/junit.xml
+                    '''
+                }
+            }
+        }
+
+        stage('Build') {
+            steps {
+                dir('/dd/ayon/git/jenkins/python-hello') {
+                    sh '''
+                        rm -rf build dist
+                        .venv/bin/python -m build
+
+                        echo "Build output:"
+                        ls -la dist
+                    '''
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            echo 'Python pipeline completed successfully.'
+        }
+
+        failure {
+            echo 'Python pipeline failed. Check the stage logs above.'
+        }
+    }
+}

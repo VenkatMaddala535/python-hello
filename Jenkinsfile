@@ -1,3 +1,4 @@
+
 pipeline {
     agent any
 
@@ -26,13 +27,28 @@ pipeline {
             }
         }
 
+        stage('SonarQube Analysis') {
+            steps {
+                dir('python-hello') {
+                    withSonarQubeEnv('SonarQube') {
+                        script {
+                            def scannerHome = tool 'SonarScanner'
+                            sh "${scannerHome}/bin/sonar-scanner"
+                        }
+                    }
+                }
+            }
+        }
+
         stage('Build and save artifact') {
             steps {
                 dir('python-hello') {
-                    sh 'rm -rf build dist && .venv/bin/python -m build'
-                    archiveArtifacts artifacts: 'dist/*', fingerprint: true
+                    sh 'rm -rf dist && .venv/bin/python -m build'
+                    archiveArtifacts artifacts: 'python-hello/dist/*',
+                                     fingerprint: true
                 }
             }
         }
     }
 }
+

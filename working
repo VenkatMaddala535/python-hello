@@ -1,0 +1,52 @@
+pipeline 
+{
+    agent 
+    {
+        label 'pipeline-linux-agent'
+    }
+    
+
+   stages {
+        stage('Install dependencies') {
+            steps {
+                dir('/dd/home/vrmaddala/jenkins/python-hello') {
+                    sh '''
+                        python3.11 -m venv .venv
+                        .venv/bin/python -m pip install -r requirements-dev.txt
+                    '''
+                }
+            }
+        }
+
+        stage('Test') {
+            steps {
+                dir('/dd/home/vrmaddala/jenkins/python-hello') {
+                    sh '''
+                    mkdir -p reports
+                    .venv/bin/python -m pytest --junitxml=reports/junit.xml
+                    '''
+                }
+            }
+        }
+
+        stage('Build and save artifact') 
+        {
+            steps 
+            {
+                dir('/dd/home/vrmaddala/jenkins/python-hello') 
+                {
+                    sh 'rm -rf  dist && .venv/bin/python -m build'
+                }
+            }
+        }
+    }
+    post {
+        success {
+            echo 'Python pipeline completed successfully.'
+        }
+
+        failure {
+            echo 'Python pipeline failed. Check the stage logs above.'
+        }
+    }
+}

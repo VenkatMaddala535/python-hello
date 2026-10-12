@@ -1,0 +1,66 @@
+pipeline 
+{
+    agent 
+    {
+        label 'pipeline-linux-agent'
+    }
+    
+    
+
+    stages 
+    {
+        stage('Getting files') 
+        {
+            steps 
+            {
+                sh '''
+                    cat /dd/home/vrmaddala/jenkins/python-hello/requirements-dev.txt >> requirements.txt
+                    cat requirements.txt
+                '''
+            }
+        }
+        stage('Install dependencies') 
+        {
+            steps 
+            {
+                dir('python-hello') 
+                {
+                    sh '''
+                        cd /dd/home/vrmaddala/jenkins/python-hello/
+                        python3.11 -m venv .venv
+                        .venv/bin/python -m pip install -r requirements-dev.txt
+                    '''
+                }
+            }
+        } 
+        stage('Test') 
+        {
+            steps 
+            {
+                dir('python-hello') 
+                {
+                    sh '''
+                        cd /dd/home/vrmaddala/jenkins/python-hello/
+                        .venv/bin/python -m pytest
+                    '''
+                }
+            }
+        }   
+        stage('Build and save artifact') 
+        {
+            steps
+            {
+                dir('python-hello') 
+                {
+                    sh '''
+                        cd /dd/home/vrmaddala/jenkins/python-hello/
+                        rm -rf dist/
+                        .venv/bin/python -m build
+                        ls -la dist/
+                    '''
+                    archiveArtifacts artifacts: 'dist/*', fingerprint: true
+                }
+            }
+        }
+    }
+}
