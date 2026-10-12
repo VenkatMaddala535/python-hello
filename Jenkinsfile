@@ -47,6 +47,9 @@ pipeline {
         stage('Docker Build') {
             steps {
                 sh '''
+                    whoami
+                    id
+                    ls -l /var/run/docker.sock
                     docker --version
                     docker build -t python-hello:1.0 .
                 '''
