@@ -1,8 +1,12 @@
 
 pipeline {
-    agent any
+    agent {
+        label 'pipeline-linux-agent'
+    }
 
     stages {
+
+
         stage('Install dependencies') {
             steps {
                 dir('python-hello') {
@@ -13,6 +17,21 @@ pipeline {
                 }
             }
         }
+
+
+        stage('Debug workspace') {
+            steps {
+                sh '''
+                    echo "Current workspace:"
+                    pwd
+                    echo "Workspace contents:"
+                    ls -la
+                    echo "Nested project contents:"
+                    ls -la python-hello || true
+                '''
+            }
+        }
+
 
         stage('Test') {
             steps {
