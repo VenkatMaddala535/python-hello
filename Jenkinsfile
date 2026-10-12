@@ -44,14 +44,14 @@ pipeline {
             }
         }
 
-        stage('Docker Build') {
+        stage('Build Docker Image') {
             steps {
                 sh '''
-                    whoami
-                    id
-                    ls -l /var/run/docker.sock
-                    docker --version
-                    docker build -t python-hello:1.0 .
+                    docker build \
+                        -t python-hello:${BUILD_NUMBER} \
+                        -t python-hello:latest .
+
+                    docker images | grep python-hello
                 '''
             }
         }
