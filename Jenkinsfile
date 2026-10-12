@@ -43,5 +43,14 @@ pipeline {
                 archiveArtifacts artifacts: 'dist/*', fingerprint: true
             }
         }
+
+        stage('Docker Build') {
+            steps {
+                sh '''
+                    docker --version
+                    docker build -t python-hello:1.0 .
+                '''
+            }
+        }
     }
 }
