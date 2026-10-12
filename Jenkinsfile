@@ -7,19 +7,7 @@ pipeline {
     stages {
 
 
-        stage('Install dependencies') {
-            steps {
-                dir('python-hello') {
-                    sh '''
-                        python3.11 -m venv .venv
-                        .venv/bin/python -m pip install -r requirements-dev.txt
-                    '''
-                }
-            }
-        }
-
-
-        stage('Debug workspace') {
+       stage('Debug workspace') {
             steps {
                 sh '''
                     echo "Current workspace:"
@@ -29,6 +17,17 @@ pipeline {
                     echo "Nested project contents:"
                     ls -la python-hello || true
                 '''
+            }
+        }
+
+        stage('Install dependencies') {
+            steps {
+                dir('python-hello') {
+                    sh '''
+                        python3.11 -m venv .venv
+                        .venv/bin/python -m pip install -r requirements-dev.txt
+                    '''
+                }
             }
         }
 
