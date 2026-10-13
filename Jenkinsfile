@@ -58,6 +58,8 @@ pipeline {
 
         stage('Push to Docker Hub') {
             steps {
+                echo 'DEBUG 1: Push stage started'
+
                 withCredentials([
                     usernamePassword(
                         credentialsId: 'dockerhub-creds',
@@ -69,41 +71,42 @@ pipeline {
                         variable: 'DOCKERHUB_REPO'
                     )
                 ]) {
+                    echo 'DEBUG 2: Credentials bound successfully'
+
                     sh '''
                         set -eu
 
-                        echo "STEP 1: Checking Docker access"
+                        echo "DEBUG 3: Shell started"
+                        echo "DEBUG 4: Checking Docker access"
                         docker info >/dev/null
 
-                        echo "STEP 2: Checking local image"
+                        echo "DEBUG 5: Checking image"
                         docker image inspect python-hello:${BUILD_NUMBER}
 
-                        echo "STEP 3: Logging in to Docker Hub"
+                        echo "DEBUG 6: Checking repository configuration"
+                        test -n "$DOCKERHUB_USER"
+                        test -n "$DOCKERHUB_REPO"
+                        echo "Repository variable is configured"
+
+                        echo "DEBUG 7: Logging in"
                         echo "$DOCKERHUB_TOKEN" | docker login \
                             --username "$DOCKERHUB_USER" \
                             --password-stdin
 
-                        echo "STEP 4: Tagging images"
+                        echo "DEBUG 8: Tagging and pushing"
                         docker tag python-hello:${BUILD_NUMBER} \
                             "$DOCKERHUB_REPO:${BUILD_NUMBER}"
-
-                        docker tag python-hello:latest \
-                            "$DOCKERHUB_REPO:latest"
-
-                        echo "STEP 5: Pushing build-number tag"
                         docker push "$DOCKERHUB_REPO:${BUILD_NUMBER}"
 
-                        echo "STEP 6: Pushing latest tag"
+                        docker tag python-hello:latest "$DOCKERHUB_REPO:latest"
                         docker push "$DOCKERHUB_REPO:latest"
 
-                        echo "STEP 7: Logging out"
                         docker logout
-
-                        echo "Docker Hub push completed"
+                        echo "DEBUG 9: Push completed"
                     '''
                 }
             }
         }
-        
+
     }
 }
