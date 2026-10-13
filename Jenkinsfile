@@ -71,22 +71,19 @@ pipeline {
                         set -eu
 
                         echo "DEBUG 2: Credentials loaded"
-
                         DOCKERHUB_REPO="${DOCKERHUB_USER}/python-hello"
 
                         echo "DEBUG 3: Checking Docker access"
                         docker info >/dev/null
 
                         echo "DEBUG 4: Logging in"
-                        echo "$DOCKERHUB_TOKEN" | docker login \
-                            --username "$DOCKERHUB_USER" \
-                            --password-stdin
+                        //docker login --username <username> --password-stdin
+                        echo "$DOCKERHUB_TOKEN" | docker login --username "$DOCKERHUB_USER" --password-stdin
 
                         echo "DEBUG 5: Tagging images"
-                        docker tag python-hello:${BUILD_NUMBER} \
-                            "$DOCKERHUB_REPO:${BUILD_NUMBER}"
-                        docker tag python-hello:latest \
-                            "$DOCKERHUB_REPO:latest"
+                        //docker tag SOURCE_IMAGE[:TAG] TARGET_IMAGE[:TAG]
+                        docker tag python-hello:${BUILD_NUMBER} "$DOCKERHUB_REPO:${BUILD_NUMBER}"
+                        docker tag python-hello:latest "$DOCKERHUB_REPO:latest"
 
                         echo "DEBUG 6: Pushing images"
                         docker push "$DOCKERHUB_REPO:${BUILD_NUMBER}"
