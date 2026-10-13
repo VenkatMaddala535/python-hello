@@ -55,5 +55,37 @@ pipeline {
                 '''
             }
         }
+        stage('Push to Docker Hub') {
+            steps {
+                withCredentials([
+                    usernamePassword(
+                        credentialsId: 'dockerhub-creds',
+                        usernameVariable: 'DOCKERHUB_USER',
+                        passwordVariable: 'DOCKERHUB_TOKEN'
+                    ),
+                    string(
+                        credentialsId: 'dockerhub-repo',
+                        variable: 'DOCKERHUB_REPO'
+                    )
+                ]) {
+                    sh '''
+                        echo "$DOCKERHUB_TOKEN" | docker login \
+                            -u "$DOCKERHUB_USER" --password-stdin
+
+                        docker tag python-hello:${BUILD_NUMBER} \
+                            ${DOCKERHUB_REPO}:${BUILD_NUMBER}
+
+                        docker tag python-hello:latest \
+                            ${DOCKERHUB_REPO}:latest
+
+                        docker push ${DOCKERHUB_REPO}:${BUILD_NUMBER}
+                        
+                        docker push ${DOCKERHUB_REPO}:latest
+
+                        docker logout
+                    '''
+                }
+            }
+        }
     }
 }
