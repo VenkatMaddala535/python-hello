@@ -55,6 +55,7 @@ pipeline {
                 '''
             }
         }
+
         stage('Push to Docker Hub') {
             steps {
                 withCredentials([
@@ -69,23 +70,40 @@ pipeline {
                     )
                 ]) {
                     sh '''
-                        echo "$DOCKERHUB_TOKEN" | docker login \
-                            -u "$DOCKERHUB_USER" --password-stdin
+                        set -eu
 
+                        echo "STEP 1: Checking Docker access"
+                        docker info >/dev/null
+
+                        echo "STEP 2: Checking local image"
+                        docker image inspect python-hello:${BUILD_NUMBER}
+
+                        echo "STEP 3: Logging in to Docker Hub"
+                        echo "$DOCKERHUB_TOKEN" | docker login \
+                            --username "$DOCKERHUB_USER" \
+                            --password-stdin
+
+                        echo "STEP 4: Tagging images"
                         docker tag python-hello:${BUILD_NUMBER} \
-                            ${DOCKERHUB_REPO}:${BUILD_NUMBER}
+                            "$DOCKERHUB_REPO:${BUILD_NUMBER}"
 
                         docker tag python-hello:latest \
-                            ${DOCKERHUB_REPO}:latest
+                            "$DOCKERHUB_REPO:latest"
 
-                        docker push ${DOCKERHUB_REPO}:${BUILD_NUMBER}
-                        
-                        docker push ${DOCKERHUB_REPO}:latest
+                        echo "STEP 5: Pushing build-number tag"
+                        docker push "$DOCKERHUB_REPO:${BUILD_NUMBER}"
 
+                        echo "STEP 6: Pushing latest tag"
+                        docker push "$DOCKERHUB_REPO:latest"
+
+                        echo "STEP 7: Logging out"
                         docker logout
+
+                        echo "Docker Hub push completed"
                     '''
                 }
             }
         }
+        
     }
 }
