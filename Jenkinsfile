@@ -65,44 +65,35 @@ pipeline {
                         credentialsId: 'dockerhub-creds',
                         usernameVariable: 'DOCKERHUB_USER',
                         passwordVariable: 'DOCKERHUB_TOKEN'
-                    ),
-                    string(
-                        credentialsId: 'dockerhub-repo',
-                        variable: 'DOCKERHUB_REPO'
                     )
                 ]) {
-                    echo 'DEBUG 2: Credentials bound successfully'
-
                     sh '''
                         set -eu
 
-                        echo "DEBUG 3: Shell started"
-                        echo "DEBUG 4: Checking Docker access"
+                        echo "DEBUG 2: Credentials loaded"
+
+                        DOCKERHUB_REPO="${DOCKERHUB_USER}/python-hello"
+
+                        echo "DEBUG 3: Checking Docker access"
                         docker info >/dev/null
 
-                        echo "DEBUG 5: Checking image"
-                        docker image inspect python-hello:${BUILD_NUMBER}
-
-                        echo "DEBUG 6: Checking repository configuration"
-                        test -n "$DOCKERHUB_USER"
-                        test -n "$DOCKERHUB_REPO"
-                        echo "Repository variable is configured"
-
-                        echo "DEBUG 7: Logging in"
+                        echo "DEBUG 4: Logging in"
                         echo "$DOCKERHUB_TOKEN" | docker login \
                             --username "$DOCKERHUB_USER" \
                             --password-stdin
 
-                        echo "DEBUG 8: Tagging and pushing"
+                        echo "DEBUG 5: Tagging images"
                         docker tag python-hello:${BUILD_NUMBER} \
                             "$DOCKERHUB_REPO:${BUILD_NUMBER}"
-                        docker push "$DOCKERHUB_REPO:${BUILD_NUMBER}"
+                        docker tag python-hello:latest \
+                            "$DOCKERHUB_REPO:latest"
 
-                        docker tag python-hello:latest "$DOCKERHUB_REPO:latest"
+                        echo "DEBUG 6: Pushing images"
+                        docker push "$DOCKERHUB_REPO:${BUILD_NUMBER}"
                         docker push "$DOCKERHUB_REPO:latest"
 
                         docker logout
-                        echo "DEBUG 9: Push completed"
+                        echo "DEBUG 7: Push completed"
                     '''
                 }
             }
