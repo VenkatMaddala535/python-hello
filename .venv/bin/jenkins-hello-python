@@ -1,4 +1,4 @@
-#!/dd/home/vrmaddala/jenkins/python-hello/.venv/bin/python
+#!/dd/ayon/jenkins/workspace/python-hello/.venv/bin/python
 # -*- coding: utf-8 -*-
 import re
 import sys

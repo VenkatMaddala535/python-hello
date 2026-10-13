@@ -35,7 +35,7 @@ deactivate () {
 # unset irrelevant variables
 deactivate nondestructive
 
-VIRTUAL_ENV=/dd/home/vrmaddala/jenkins/python-hello/.venv
+VIRTUAL_ENV=/dd/ayon/jenkins/workspace/python-hello/.venv
 export VIRTUAL_ENV
 
 _OLD_VIRTUAL_PATH="$PATH"

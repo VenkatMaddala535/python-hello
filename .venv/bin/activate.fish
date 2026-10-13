@@ -33,7 +33,7 @@ end
 # Unset irrelevant variables.
 deactivate nondestructive
 
-set -gx VIRTUAL_ENV /dd/home/vrmaddala/jenkins/python-hello/.venv
+set -gx VIRTUAL_ENV /dd/ayon/jenkins/workspace/python-hello/.venv
 
 set -gx _OLD_VIRTUAL_PATH $PATH
 set -gx PATH "$VIRTUAL_ENV/"bin $PATH
