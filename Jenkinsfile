@@ -77,11 +77,11 @@ pipeline {
                         docker info >/dev/null
 
                         echo "DEBUG 4: Logging in"
-                        //docker login --username <username> --password-stdin
+                        # docker login --username <username> --password-stdin
                         echo "$DOCKERHUB_TOKEN" | docker login --username "$DOCKERHUB_USER" --password-stdin
 
                         echo "DEBUG 5: Tagging images"
-                        //docker tag SOURCE_IMAGE[:TAG] TARGET_IMAGE[:TAG]
+                        # docker tag SOURCE_IMAGE[:TAG] TARGET_IMAGE[:TAG]
                         docker tag python-hello:${BUILD_NUMBER} "$DOCKERHUB_REPO:${BUILD_NUMBER}"
                         docker tag python-hello:latest "$DOCKERHUB_REPO:latest"
 
