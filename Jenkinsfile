@@ -1,6 +1,6 @@
 
 pipeline {
-    agent { label 'pipeline-linux-agent' }
+    agent { label 'pipeline-agent' }
 
     stages {
         stage('Install dependencies') {
