@@ -23,6 +23,12 @@ pipeline {
             }
         }
 
+        stage('Pylint') {
+            steps {
+                sh '.venv/bin/python -m pylint src/hello_web'
+            }
+        }
+
         stage('SonarQube Analysis') {
             steps {
                 withSonarQubeEnv('SonarQube') {
