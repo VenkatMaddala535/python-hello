@@ -6,6 +6,7 @@ from hello_web.greeting import greeting
 
 
 def create_app() -> Flask:
+    """To handle mutliple functions."""
     app = Flask(__name__, static_folder="public", static_url_path="/static")
 
     @app.get("/")

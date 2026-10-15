@@ -1,7 +1,5 @@
 """Run the local learning server."""
 
-import os
-
 from hello_web.app import create_app
 
 
