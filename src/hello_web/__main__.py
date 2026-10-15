@@ -4,6 +4,7 @@ from hello_web.app import create_app
 
 
 def main():
+    """main function"""
     create_app().run(
         host="0.0.0.0",
         port="5001",
